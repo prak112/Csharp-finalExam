@@ -43,5 +43,5 @@
 			- name (string)
 			- price (decimal)
 		- Methods :
-			- CalculateDiscountedPrice(deci)
+			- CalculateDiscountedPrice(decimal), for 20% discount
 		
