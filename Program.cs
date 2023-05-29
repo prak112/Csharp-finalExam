@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 
 namespace CourseExam
 {
@@ -6,106 +7,191 @@ namespace CourseExam
     {
         static void Main(string[] args)
         {
-
-            #region Task1_PhoneNumber
-            Console.WriteLine("\n---Task 1---\n");
-
-            Console.WriteLine("Enter Phone Number (example input : 123456789) ");
-            string userInput = Console.ReadLine();
-
-            bool phoneNumberIsValid = ValidatePhoneNumber(userInput);
-            Console.WriteLine($"Phone Number is in valid format : {phoneNumberIsValid}");
-
-
-            #endregion
-
-            #region Task2_GenerateUserName
-            Console.WriteLine("\n---Task 2---\n");
-            Console.WriteLine("Enter full name : \n(example input: firstname lastname) ");
-            string[] nameArray = Console.ReadLine().Split(' ');
-            string firstname = nameArray[0];
-            string lastname = nameArray[1];
-            Console.WriteLine(GenerateUserName(firstname, lastname));
-            Console.WriteLine("\n---End Task 2---\n");
-            #endregion
-
-            #region Task3_JavelinThrow
-            Console.WriteLine("\n---Task 3---\n");
-            
-            Console.WriteLine("Enter Athelete full name : ");
-            string atheleteName = Console.ReadLine();
-
-            Console.WriteLine("Enter Athelete's Throw distance (in meters) : ");
-            int throwDistance_inMeters = int.Parse(Console.ReadLine());
-
-            List<JavelinThrow> athelete = new List<JavelinThrow>();
-            JavelinThrow throwData = new JavelinThrow();
-            throwData.Id += 1;
-            throwData.Name = atheleteName;
-            throwData.ThrowDistance_inMeters = throwDistance_inMeters;
-            throwData.ThrowDistance_inCentimeters = throwDistance_inMeters * 100;
-
-            athelete.Add(throwData);
-
-           foreach (JavelinThrow item in athelete)
+            try
             {
-                Console.WriteLine(item.Id);
-                Console.WriteLine(item.Name);
-                Console.WriteLine(item.ThrowDistance_inMeters);
-                Console.WriteLine(item.ThrowDistance_inCentimeters);
-            }
+                #region Task1_PhoneNumber
+                Console.WriteLine("\n---Task 1_Validate Phone Number---\n");
 
-            Console.WriteLine("\n---End Task 3---\n");
-            #endregion
+                Console.WriteLine("Enter Phone Number (example input : 123456789) ");
+                string userInput = Console.ReadLine();
+
+                bool phoneNumberIsValid = ValidatePhoneNumber(userInput);
+                Console.WriteLine($"Is the Phone Number in valid format ? : {phoneNumberIsValid}");
+                Console.WriteLine("\n---End Task 1_Validate Phone Number----\nPress any key to continue...");
+                _ = Console.ReadKey();
+                Console.Clear();
+                #endregion
+
+
+
+                #region Task2_GenerateUserName
+                Console.WriteLine("\n---Task 2_Generate Username---\n");
+                Console.WriteLine("Enter full name : \n(example input: firstname lastname) ");
+
+                // split user input to string array
+                string[] nameArray = Console.ReadLine().Split(' ');
+                string firstname = nameArray[0];
+                string lastname = nameArray[1];
+
+                // call method and print return variable
+                string username = GenerateUserName(firstname, lastname);
+                Console.WriteLine($"\nUser : {firstname} {lastname}\nUsername : {username}");
+                Console.WriteLine("\n---End Task 2_Generate Username---\nPress any key to continue...");
+                _ = Console.ReadKey();
+                Console.Clear();
+                #endregion
+
+
+
+                #region Task3_JavelinThrow
+                Console.WriteLine("\n---Task 3_Javelin Throw---\n");
+
+                // initialize list and userExit option
+                List<JavelinThrow> athelete = new List<JavelinThrow>();
+                bool userExit = false;
+
+                // iterate user input till userExit=true
+                while (!userExit)
+                {
+                    Console.WriteLine("Enter Athelete full name : ");
+                    string atheleteName = Console.ReadLine();
+
+                    Console.WriteLine("Enter Athelete's Throw distance (in meters) : ");
+                    double throwDistance_inMeters = double.Parse(Console.ReadLine());
+                    double throwDistance_inCentimeters = throwDistance_inMeters * 100;
+
+                    // pack data in Javelin Throw class object
+                    JavelinThrow throwData = new JavelinThrow(atheleteName, throwDistance_inMeters, throwDistance_inCentimeters);
+                    
+                    // add throwData to athelete
+                    athelete.Add(throwData);
+                    
+                    // confirm user input to add or exit
+                    Console.WriteLine("Press 'enter' to add more atheletes or 'e' to exit");
+                    userExit = Console.ReadLine() == "e" ? true : false;
+                    Console.Clear();
+                }
+
+                // iterate and present user input data
+                Console.WriteLine("~\t\t\t\n----Javelin Throws----~\nAtheleteID\tAthelete Name\t\tThrow Distance (in meters)\t\tThrow Distance (in centimeters)");
+                // iterate each throw from athelete List
+                for (int i = 0; i < athelete.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}\t\t{athelete[i].Name}\t\t\t{Math.Round(athelete[i].ThrowDistance_inMeters, 2)}\t\t\t\t\t{Math.Round(athelete[i].ThrowDistance_inCentimeters, 2)}");
+                }
+
+                Console.WriteLine("\n---End Task 3_Javelin Throw---\nPress any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+                #endregion
+
+
+
+                #region Task4_Product
+                Console.WriteLine("\n---Task4_Product---\n");
+
+                // initialize products list
+                List<Product> productsList = new List<Product>();
+                decimal productsTotal = 0.0m;
+
+                // iterate user input for product name
+                bool endList = false;
+                while (!endList)
+                {
+                    // add products to productsList
+                    Console.WriteLine("Enter the name of product to buy : ");
+                    Product item = new Product(Console.ReadLine());
+                    productsList.Add(item);
+
+                    // confirm user input to add or exit
+                    Console.Write("Would you like to add more : Press 'enter' to add, 'e to exit");
+                    endList = Console.ReadLine() == "e" ? true : false;
+                    Console.Clear();
+                }
+
+                // print products information - id, name, price and discount price
+                Console.WriteLine("\n\t\t\t~----Products in the Basket----~\nProduct ID\tProduct Name\t\tProduct Original Price\t\tProduct Discounted Price");
+                foreach (var item in productsList)
+                {
+                    decimal discountPrice = item.GetDiscountPrice(item.Price);
+                    Console.WriteLine($"{item.Id}\t\t{item.Name}\t\t\t{item.Price}\t\t\t{discountPrice}");
+
+                    // sum productsTotal with discountPrice
+                    productsTotal += discountPrice;
+                }
+
+                // print productsTotal
+                Console.WriteLine($"Total to pay after 20% discount on all products : {productsTotal} Euro");
+                Console.WriteLine("\n---End Task4_Product---\nPress any key to continue...");
+                #endregion
+
+            }
+            catch (Exception ex) { Console.WriteLine($"\n\nPlease check you error below:\n{ex.Message}"); }
+
         }
 
 
+        // Task1
         public static bool ValidatePhoneNumber(string userString)
         {
-            Console.WriteLine("\n---Task 1---\n");
             string phoneNumber = "+358";
-            bool validNumber = false;
-            while (!validNumber)
-            {                               
-                // verify all characters within 0-9
-                char[] numbersArray = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-                for (int i = 0; i < userString.Length; i++)
+            bool validNumber;
+            // verify all characters within 0-9
+            char[] numbersArray = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            for (int i = 0; i < userString.Length; i++)
+            {
+                foreach (char c in numbersArray)
                 {
-                    foreach (char c in numbersArray)
+                    if (userString[i] == c && phoneNumber.Length != 13)
                     {
-                        if (userString[i] == c && phoneNumber.Length != 13)
-                        {
-                            phoneNumber += c.ToString();
-                        }
+                        phoneNumber += c.ToString();
                     }
                 }
-                // verify final length of phoneNumber
-                if (phoneNumber.Length == 13)
-                {
-                    Console.WriteLine($"Number entered {phoneNumber} is accepted.");
-                    validNumber = true;
-                }
-                else
-                {
-                    Console.WriteLine($"Number entered {phoneNumber} is NOT accepted. Try again until it is accepted :D");
-                    validNumber = false;
-                }                             
             }
-            Console.WriteLine("\n---End Task 1---\n");
+            // verify final length of phoneNumber
+            if (phoneNumber.Length == 13)
+            {
+                Console.WriteLine($"Number entered {phoneNumber} is accepted.");
+                validNumber = true;
+            }
+            else
+            {
+                Console.WriteLine($"Number entered {phoneNumber} is NOT accepted.");
+                validNumber = false;
+            }
             return validNumber;
         }
 
-
+        // Task2
         public static string GenerateUserName(string firstname, string lastname)
         {
-            Console.WriteLine("\n---Task 2---\n");
             string username = string.Empty;
-            username += firstname.Substring(0, 3);       // substring first 3 letters of firstname
-            username += lastname.Substring(0, 5);       // substring first 5 letters of firstname
-            Console.WriteLine($"\nUser : {firstname} {lastname}\nUserName : {username}");
+            try 
+            { 
+                if (firstname != null && lastname != null && firstname.Length > 3 && lastname.Length > 5)
+                {
+                    username += firstname.Substring(0, 3);       // substring first 3 letters of firstname
+                    username += lastname.Substring(0, 5);       // substring first 5 letters of firstname
+                }
+                else if (firstname != null && lastname != null && firstname.Length <= 3 && lastname.Length <= 5)
+                {
+                    username = firstname + lastname; 
+                }
+                else if (firstname != null && lastname != null && firstname.Length <= 3 && lastname.Length > 5)
+                {
+                    username = firstname + lastname.Substring(0, 5);
+                }
+                else if (firstname != null && lastname != null && firstname.Length > 3 && lastname.Length <= 5)
+                {
+                    username = firstname.Substring(0, 3) + lastname;
+                }
+            }
+            catch (Exception ex) { Console.WriteLine($"ERROR : {ex.Message}\n---Terminate Program---\n"); }
 
-            Console.WriteLine("\n---End Task 2---\n");
             return username;
+            
         }
+
+
     }
 }
